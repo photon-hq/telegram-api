@@ -1,0 +1,33 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["ultracite/biome/core"],
+  "linter": {
+    "rules": {
+      "suspicious": {
+        "useAwait": "off"
+      }
+    }
+  },
+  "javascript": {
+    "globals": ["Bun"]
+  },
+  "files": {
+    // bun.lock and the generated OpenAPI spec are artifacts Biome shouldn't process.
+    "includes": ["!!bun.lock", "!!specs"]
+  },
+  "overrides": [
+    {
+      // The published package entry point is a deliberate barrel that re-exports
+      // the generated SDK/types and namespaces every generated Zod schema.
+      "includes": ["packages/telegram-ts/src/index.ts"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noBarrelFile": "off",
+            "noNamespaceImport": "off"
+          }
+        }
+      }
+    }
+  ]
+}

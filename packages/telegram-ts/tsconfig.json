@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // DOM provides fetch/Request/Response/Headers/FormData used by the bundled
+    // client, so the package stays runtime-agnostic (Node 18+, Bun, Deno, browser).
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    // Generated client code is the shipped product but isn't authored to our
+    // pedantic index-access rule; keep `strict` on, relax index-access noise.
+    "noUncheckedIndexedAccess": false
+  },
+  "include": ["src", "openapi-ts.config.ts", "tsdown.config.ts"]
+}

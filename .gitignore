@@ -1,0 +1,8 @@
+node_modules/
+.DS_Store
+
+# Generated Hey API client (built from specs/ in CI; not committed)
+packages/*/src/generated/
+
+# Build output
+packages/*/dist/

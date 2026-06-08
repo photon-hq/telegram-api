@@ -1,0 +1,28 @@
+{
+  "name": "telegram-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.3.5",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "generate:openapi": "bun scripts/generate-telegram-openapi.ts",
+    "generate:client": "bun --filter @photon-ai/telegram-ts generate",
+    "build": "bun --filter @photon-ai/telegram-ts build",
+    "typecheck": "tsc --noEmit && bun --filter @photon-ai/telegram-ts typecheck",
+    "test": "bun --filter @photon-ai/telegram-ts test",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "compute:version": "bun scripts/compute-version.ts",
+    "diff:surface": "bun scripts/api-surface-diff.ts"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.12",
+    "@gramio/schema-parser": "^1.1.0",
+    "@types/bun": "latest",
+    "typescript": "^5.9.3",
+    "ultracite": "7.8.2"
+  }
+}
