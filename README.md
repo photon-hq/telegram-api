@@ -34,9 +34,22 @@ bun run compute:version    # preview the next npm version
 
 ## One-time setup (before the first publish)
 
-- Create the `@photon-ai` scope/org on npm.
-- Register a **Trusted Publisher** for `@photon-ai/telegram-ts` pointing at this repository and `.github/workflows/release.yaml` (npm package settings → Publishing access → Trusted Publisher). No secrets are stored.
-- (Optional) Set the repository variable `AUTO_MERGE=true` to auto-merge additive-only spec updates so publishing is fully hands-off. Breaking changes (removed methods/schemas) always require manual review.
+The release workflow publishes via **npm Trusted Publishing (OIDC)** — no `NPM_TOKEN`. New packages have a chicken-and-egg: a Trusted Publisher can only be attached to a package/scope that exists. Do this once:
+
+1. **Create the `@photon-ai` org** on npm (npmjs.com → *Add organization*).
+2. **Bootstrap the package** so a Trusted Publisher can be attached to it — either:
+   - register an org-level Trusted Publisher if your npm plan supports it, **or**
+   - run one manual first publish from a logged-in maintainer machine:
+     ```sh
+     cd packages/telegram-ts
+     npm pkg set version=10.0.0
+     bun run build
+     npm publish --access public      # creates @photon-ai/telegram-ts@10.0.0
+     ```
+3. **Register the Trusted Publisher** on the package: npmjs.com → `@photon-ai/telegram-ts` → *Settings → Publishing access → Trusted Publisher* → GitHub Actions, repository `photon-hq/telegram-api`, workflow `release.yaml`. From here on, every release publishes tokenlessly with provenance.
+4. (Optional) Set repo variable `AUTO_MERGE=true` to auto-merge additive-only spec updates so publishing is fully hands-off. Breaking changes (removed methods/schemas) always require manual review.
+
+If you bootstrapped with a manual publish (step 2, second option), `10.0.0` is already live and the automation takes over on the next spec change — nothing else to run. If you used an org-level Trusted Publisher *without* a manual publish, re-run the release to cut `10.0.0`: `gh workflow run release.yaml --ref main`.
 
 ## Layout
 
