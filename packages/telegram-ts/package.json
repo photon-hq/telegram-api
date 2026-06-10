@@ -40,7 +40,7 @@
     "generate": "openapi-ts",
     "prebuild": "bun run generate",
     "build": "tsdown",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p test",
     "test": "bun test"
   },
   "dependencies": {

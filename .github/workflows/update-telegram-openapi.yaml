@@ -6,9 +6,11 @@ on:
     - cron: "37 9 * * *"
   workflow_dispatch:
 
+# PR creation and auto-merge use a GitHub App token (org-wide APP_ID /
+# APP_PRIVATE_KEY secrets): the org blocks Actions from opening PRs, and PRs
+# created with GITHUB_TOKEN would not trigger the release workflow on merge.
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: update-telegram-openapi
@@ -18,7 +20,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           # Need the committed spec at HEAD to compute the API-surface diff.
           fetch-depth: 0
@@ -57,10 +59,18 @@ jobs:
           bun run diff:surface > surface.md
           echo "breaking=$(grep -q 'Breaking' surface.md && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
+      - name: Mint GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Create or update pull request
         id: cpr
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
+          token: ${{ steps.app-token.outputs.token }}
           branch: chore/update-telegram-openapi
           delete-branch: true
           commit-message: "chore: update Telegram Bot API OpenAPI"
@@ -77,5 +87,7 @@ jobs:
           steps.surface.outputs.breaking == 'false' &&
           vars.AUTO_MERGE == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
+          # App token, not github.token: a merge enabled by GITHUB_TOKEN would
+          # not trigger the release workflow's push event on main.
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: gh pr merge --auto --squash "${{ steps.cpr.outputs.pull-request-number }}"

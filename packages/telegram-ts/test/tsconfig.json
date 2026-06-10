@@ -1,0 +1,14 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    // Match the package tsconfig: the imported src files type against DOM's
+    // fetch/Request/Response/BodyInit.
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    // Tests run under `bun test`; Bun's types provide the bun:test module.
+    "types": ["bun"],
+    // Match the package tsconfig: generated client code pulled in via src
+    // isn't authored to the pedantic index-access rule.
+    "noUncheckedIndexedAccess": false
+  },
+  "include": ["."]
+}

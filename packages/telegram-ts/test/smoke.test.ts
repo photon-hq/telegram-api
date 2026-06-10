@@ -18,7 +18,9 @@ const jsonResponse = (body: unknown, status: number): Response =>
 describe("createTelegramClient", () => {
   it("embeds the token in the URL path and unwraps a successful result", async () => {
     let calledUrl = "";
-    const mockFetch: MockFetch = (input) => {
+    // Cast: Bun's `typeof fetch` requires a `preconnect` method the client
+    // never calls.
+    const mockFetch = ((input: RequestInfo | URL) => {
       calledUrl = input instanceof Request ? input.url : String(input);
       return Promise.resolve(
         jsonResponse(
@@ -29,7 +31,7 @@ describe("createTelegramClient", () => {
           200
         )
       );
-    };
+    }) as MockFetch;
 
     const client = createTelegramClient({ token: "123:ABC", fetch: mockFetch });
     const response = await getMe({ client });
@@ -40,7 +42,7 @@ describe("createTelegramClient", () => {
   });
 
   it("throws a typed TelegramApiError when Telegram responds ok:false", async () => {
-    const mockFetch: MockFetch = () =>
+    const mockFetch = ((_input: RequestInfo | URL) =>
       Promise.resolve(
         jsonResponse(
           {
@@ -51,7 +53,7 @@ describe("createTelegramClient", () => {
           },
           429
         )
-      );
+      )) as MockFetch;
 
     const client = createTelegramClient({ token: "123:ABC", fetch: mockFetch });
 
