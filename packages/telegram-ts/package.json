@@ -11,6 +11,13 @@
     "client"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/photon-hq/telegram-api.git",
+    "directory": "packages/telegram-ts"
+  },
+  "homepage": "https://github.com/photon-hq/telegram-api/tree/main/packages/telegram-ts#readme",
+  "bugs": "https://github.com/photon-hq/telegram-api/issues",
   "type": "module",
   "sideEffects": false,
   "exports": {
