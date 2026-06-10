@@ -56,8 +56,10 @@ jobs:
           # Compare the regenerated working-tree spec against the committed spec.
           BASE_REF: HEAD
         run: |
-          bun run diff:surface > surface.md
-          echo "breaking=$(grep -q 'Breaking' surface.md && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          # Write outside the repo: a report file in the working tree would get
+          # committed into the PR and produce a spec-less update.
+          bun run diff:surface > "$RUNNER_TEMP/surface.md"
+          echo "breaking=$(grep -q 'Breaking' "$RUNNER_TEMP/surface.md" && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
       - name: Mint GitHub App token
         id: app-token
@@ -75,8 +77,11 @@ jobs:
           delete-branch: true
           commit-message: "chore: update Telegram Bot API OpenAPI"
           title: "chore: update Telegram Bot API OpenAPI"
-          body-path: surface.md
+          body-path: ${{ runner.temp }}/surface.md
           labels: telegram-spec-update
+          # Only the spec belongs in the PR — it must change for the release
+          # workflow's path filter to fire. No spec change → no PR.
+          add-paths: specs/telegram-bot-api.openapi.json
 
       # Optional hands-off publishing: when AUTO_MERGE is enabled and the change
       # is additive-only, enable auto-merge so the release workflow runs on merge.
