@@ -13403,7 +13403,7 @@
         "tags": [
           "Telegram Bot API"
         ],
-        "description": "Use this method to process a received chat join request query by showing a Mini App to the user before deciding the outcome. Returns *True* on success.",
+        "description": "Use this method to process a received chat join request query by showing a Mini App to the user before deciding the outcome. Call [answerChatJoinRequestQuery](https://core.telegram.org/bots/api#answerchatjoinrequestquery) to resolve the join request query based on the user interaction with the Mini App. Returns *True* on success.",
         "externalDocs": {
           "description": "Telegram Bot API reference",
           "url": "https://core.telegram.org/bots/api#sendchatjoinrequestwebapp"
@@ -17538,7 +17538,7 @@
                 "properties": {
                   "business_connection_id": {
                     "type": "string",
-                    "description": "Unique identifier of the business connection on behalf of which the message will be sent"
+                    "description": "Unique identifier of the business connection on behalf of which the message will be sent. Bot can send rich messages on behalf of a business account only if the corresponding user can send rich messages."
                   },
                   "chat_id": {
                     "oneOf": [
@@ -17630,7 +17630,7 @@
                 "properties": {
                   "business_connection_id": {
                     "type": "string",
-                    "description": "Unique identifier of the business connection on behalf of which the message will be sent"
+                    "description": "Unique identifier of the business connection on behalf of which the message will be sent. Bot can send rich messages on behalf of a business account only if the corresponding user can send rich messages."
                   },
                   "chat_id": {
                     "oneOf": [
@@ -26734,7 +26734,7 @@
           },
           "query_id": {
             "type": "string",
-            "description": "*Optional*. Identifier of the join request query. If present, then the bot must call [sendChatJoinRequestWebApp](https://core.telegram.org/bots/api#sendchatjoinrequestwebapp) or directly call [answerChatJoinRequestQuery](https://core.telegram.org/bots/api#answerchatjoinrequestquery) within 10 seconds."
+            "description": "*Optional*. Identifier of the join request query; for bots assigned to process join request only. If present, then the bot must call [sendChatJoinRequestWebApp](https://core.telegram.org/bots/api#sendchatjoinrequestwebapp) or directly call [answerChatJoinRequestQuery](https://core.telegram.org/bots/api#answerchatjoinrequestquery) within 10 seconds."
           }
         },
         "required": [
@@ -36740,7 +36740,7 @@
         ]
       },
       "RichBlockPhoto": {
-        "description": "A block with a photo, corresponding to the HTML tag `<photo>`.",
+        "description": "A block with a photo, corresponding to the HTML tag `<img>`.",
         "externalDocs": {
           "description": "Telegram Bot API reference",
           "url": "https://core.telegram.org/bots/api#richblockphoto"
