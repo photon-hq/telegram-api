@@ -92,4 +92,4 @@ The package version mirrors the Telegram Bot API version: `MAJOR.MINOR` track th
 
 ## License
 
-MIT
+Apache-2.0
